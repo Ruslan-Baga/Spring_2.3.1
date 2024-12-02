@@ -2,9 +2,6 @@ package web.model;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 
 
 @Entity
@@ -17,15 +14,11 @@ public class User {
     private int id;
 
     @Column(name = "name")
-    @NotEmpty(message = "Поле не должно быть пустым")
     private String name;
-    
-    @Min(value = 1, message = "Возраст должен быть положительным")
+
     @Column(name = "age")
     private int age;
 
-    @NotEmpty(message = "Поле не должно быть пустым")
-    @Email
     @Column(name = "email")
     private String email;
 

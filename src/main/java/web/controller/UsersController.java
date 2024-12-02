@@ -1,30 +1,26 @@
 package web.controller;
 
-import net.bytebuddy.matcher.StringMatcher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import web.dao.UserDAOimt;
+import web.service.UserService;
 import web.model.User;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.validation.Valid;
-
 
 @Controller
 @RequestMapping("/users")
 public class UsersController {
 
-    private final UserDAOimt userDAOimt;
+    private final UserService userService;
 
-    public UsersController(UserDAOimt userDAOimt) {
-        this.userDAOimt = userDAOimt;
+    @Autowired
+    public UsersController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping()
     public String allUsers(Model model) {
-        model.addAttribute("users", userDAOimt.allUsers());
+        model.addAttribute("users", userService.findAll());
         return "/views/list";
     }
     @GetMapping("/new")
@@ -33,12 +29,8 @@ public class UsersController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute("user")@Valid User user
-    ,BindingResult bindingResult){
-       if (bindingResult.hasErrors()) {
-           return "views/new";
-       }
-       userDAOimt.save(user);
+    public String create(@ModelAttribute("user")User user) {
+        userService.save(user);
        return "redirect:/users";
     }
     @GetMapping("/deleteUser")
@@ -47,20 +39,17 @@ public class UsersController {
     }
     @PostMapping("/delete")
     public String delete(@RequestParam Integer id) {
-        userDAOimt.deleteUser(id);
+        userService.deleteUser(id);
         return "redirect:/users";
     }
     @GetMapping("/editUser")
     public String editUser(@RequestParam int id, Model model) {
-        model.addAttribute("user", userDAOimt.getUser(id));
+        model.addAttribute("user", userService.getUser(id));
         return "views/edit";
     }
     @PostMapping("/edit")
-    public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "views/edit";
-        }
-        userDAOimt.update(user, user.getId());
+    public String updateUser(@ModelAttribute("user") User user) {
+        userService.updateUser(user, user.getId());
         return "redirect:/users";
     }
 }
