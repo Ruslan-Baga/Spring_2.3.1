@@ -2,6 +2,7 @@ package web.model;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 
 @Entity
@@ -13,12 +14,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ]{2,}$"
+            , message = "длина имени должна быть больше 2 символов, имя может содержать только буквы")
     @Column(name = "name")
     private String name;
 
+    @Min(value = 1, message = "возраст должен положительным")
     @Column(name = "age")
     private int age;
 
+    @NotBlank(message = "поле не должно быть пустым")
+    @Email
     @Column(name = "email")
     private String email;
 
